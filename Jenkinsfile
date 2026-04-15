@@ -1,9 +1,10 @@
 pipeline {
-    agent any  // Use any available agent
+    agent any
 
     tools {
-        maven 'Maven'  // Ensure this matches the name configured in Jenkins
+        maven 'Maven'
     }
+
     stages {
         stage('Checkout') {
             steps {
@@ -13,31 +14,26 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'chmod +x gradlew'
-                sh './gradlew build --no-daemon'
+                sh 'mvn clean package'
             }
         }
 
         stage('Test') {
-    steps {
-        sh './gradlew test --no-daemon'
-    }
-}
+            steps {
+                sh 'mvn test'
+            }
+        }
 
-        
-        
-       
-        stage('Run Application') {
-    steps {
-        sh './gradlew run'
-    }
-}
-        
+        stage('Show Output') {
+            steps {
+                sh 'ls -l target'
+            }
+        }
     }
 
     post {
         success {
-            echo 'Build and deployment successful!'
+            echo 'Build successful!'
         }
         failure {
             echo 'Build failed!'
